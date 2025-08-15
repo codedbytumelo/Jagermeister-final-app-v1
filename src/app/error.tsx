@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-export default function GlobalError({ error, reset }: { error: any; reset: () => void }) {
+export default function GlobalError({ error, reset }: any) {
   console.error(error);
 
   return (
