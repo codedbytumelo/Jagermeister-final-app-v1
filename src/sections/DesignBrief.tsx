@@ -1,48 +1,89 @@
+"use client";
+
+import React from "react";
+
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Layers, Scissors, Leaf, FileText } from "lucide-react";
 import Tag from "@/components/Tag";
 
-export default function DesignBrief() {
-    return (
-        <section className="py-28 lg:py-30">
-            <div className="container">
-            <div className="flex justify-center">
-                <Tag>Design Brief</Tag>
-            </div>
-            <div className="text-xl md:text-2xl lg:text-4xl text-center font-medium mt-10">
-                <span>Unleash Your Creativity.</span>{" "}
-                <span className="text-white/15"></span>
-                This is your opportunity to redefine fashion with your unique vision and craftsmanship.
-                <span className="text-orange-400 block">
-                Submit your designs and be part of the Jagermeister Fashion Design Awards.
-                </span>
-            </div>
+interface BriefCard {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
 
-            {/* Competition Brief Section */}
-            <div className="mt-16 flex flex-col items-center w-full">
-                <div className="flex flex-col md:flex-row justify-between gap-6 w-full max-w-5xl">
-                    <p className="bg-[#CC5500] rounded-2xl border border-white/10 p-6 text-base md:text-lg text-gray-300 mb-4 md:mb-0 md:w-1/2">
-                        <strong>Key Themes:</strong> <br />
-                        - Nightlife & Urban Culture<br />
-                        - Boldness & Individuality<br />
-                        - Heritage & Modernity Fusion<br />
-                        - Sustainability & Innovation
-                    </p>
-                    <p className="bg-[#CC5500] rounded-2xl border border-white/10 p-6 text-base md:text-lg text-gray-300 mb-4 md:mb-0 md:w-1/2">
-                        <strong>Materials to Use:</strong> <br />
-                        - Eco-friendly fabrics (organic cotton, recycled polyester, hemp, etc.)<br />
-                        - Leather or vegan leather accents<br />
-                        - Metallic or reflective details<br />
-                        - Upcycled or repurposed materials are encouraged
-                    </p>
+const briefItems: BriefCard[] = [
+  {
+    title: "Key Themes",
+    description: `Nightlife & Urban Culture
+Boldness & Individuality
+Heritage & Modernity Fusion
+Sustainability & Innovation`,
+    icon: <Layers size={36} aria-label="Themes" />,
+  },
+  {
+    title: "Materials to Use",
+    description: `Eco-friendly fabrics (organic cotton, recycled polyester, hemp, etc.)
+Leather or vegan leather accents
+Metallic or reflective details
+Upcycled or repurposed materials encouraged`,
+    icon: <Scissors size={36} aria-label="Materials" />,
+  },
+  {
+    title: "Submission Requirements",
+    description: `Upload a colored fashion illustration (digital or hand-drawn, JPEG/PNG, max 10MB)
+Include technical flat drawings (front and back views, PDF/JPEG/PNG)
+Brief description (max 200 words) explaining concept and material choices`,
+    icon: <FileText size={36} aria-label="Requirements" />,
+  },
+];
+
+export default function DesignBrief() {
+  return (
+    <section className="py-28 lg:py-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center">
+          <Tag>Design Brief</Tag>
+          <h2 className="text-3xl sm:text-4xl font-bold mt-6">
+            Unleash Your Creativity
+          </h2>
+          <p className="mt-4 text-lg text-white/70 max-w-2xl mx-auto">
+            This is your opportunity to redefine fashion with your unique vision
+            and craftsmanship. Submit your designs and be part of the{" "}
+            <span className="text-orange-500 font-semibold">
+              Jägermeister Fashion Design Awards.
+            </span>
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {briefItems.map((item, idx) => (
+            <Card
+              key={idx}
+              className="rounded-2xl border border-white/10 bg-[#CC5500] text-gray-100 shadow-lg"
+            >
+              <CardHeader className="flex flex-col items-start space-y-4 p-6">
+                <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-black/20 text-white">
+                  {item.icon}
                 </div>
-                <p className="bg-[#CC5500] rounded-2xl border border-white/10 p-6 text-base md:text-lg text-gray-300 mt-6 w-full max-w-5xl">
-                    <strong>Submission Requirements:</strong> <br />
-                    - Upload a colored fashion illustration (digital or hand-drawn, JPEG/PNG, max 10MB)<br />
-                    - Include technical flat drawings (front and back views, PDF/JPEG/PNG)<br />
-                    - Brief description (max 200 words) explaining your concept and material choices
-                </p>
-               
-            </div>
-            </div>
-        </section>
-    );
+                <CardTitle className="text-xl font-semibold">
+                  {item.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0 whitespace-pre-line opacity-90">
+                {item.description}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

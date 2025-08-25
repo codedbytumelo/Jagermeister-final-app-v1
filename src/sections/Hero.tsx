@@ -1,146 +1,124 @@
 "use client";
 
-import Button from "@/components/Button";
-import HeroImage1 from "@/assets/images/aiony-haust.jpg";
-import HeroImage2 from "@/assets/images/malicki-m.jpg";
-import Image from "next/image";
-import Pointer from "@/components/Pointer";
-import { motion, useAnimate } from "framer-motion";
-import { useEffect } from "react";
-import CursorImage from "@/assets/images/cursor-you.svg"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import React, { ReactNode } from "react";
+import { MdStar } from "react-icons/md";
 
-
-export default function Hero() {
-    const [leftDesignScope, leftDesignAnimate] = useAnimate();
-    const [leftPointerScope, leftPointerAnimate] = useAnimate ();
-    const [rightDesignScope, rightDesignAnimate] = useAnimate ();
-    const [rightPointerScope, rightPointerAnimate] = useAnimate ();
-
-    useEffect(() => {
-        leftDesignAnimate([
-            [leftDesignScope.current, 
-                { opacity: 1 }, 
-                { duration: 0.5}
-            ],
-            [leftDesignScope.current, 
-                { y: 0, x: 0 }, 
-                { duration: 0.5}
-            ],
-        ]);
-        leftPointerAnimate([
-            [leftPointerScope.current, 
-                { opacity: 1 }, 
-                { duration: 0.5, delay:1}
-            ],
-            [leftPointerScope.current, 
-                { y: 0, x: 100 }, 
-                { duration: 0.5}
-            ],
-            [
-                leftPointerScope.current, 
-                { X:0, y: [0, 16, 0] }, 
-                { duration: 0.5},
-            ],
-        ]);
-
-        rightDesignAnimate([
-            [rightDesignScope.current, 
-                { opacity: 1}, 
-                { duration: 0.5, delay: 1.5 }
-            ],
-            [
-                rightDesignScope.current, 
-                { x: 0, y: 0 }, 
-                { duration: 0.5},               
-            ],
-        
-        ]);
-        rightPointerAnimate([
-            [rightPointerScope.current, 
-                { opacity: 1}, 
-                {duration: 0.5, delay: 1.5}
-            ],
-            [
-                rightPointerScope.current,
-                {x: 175, y: 0},
-                { duration: 0.5},
-            ],
-            [rightPointerScope.current, 
-                { x:0, y: [0, 20, 0] },
-                { duration: 0.5},
-            ],
-        ]);
-    },[]);
-    return (
-    <section className="py-24 overflow-x-clip" style={{
-        cursor: `url(${CursorImage.src}), auto`
-    }}>
-        <div className="container relative">
-            <motion.div
-            ref={leftDesignScope}
-            initial={{opacity: 0, y: 100, x: -100}}
-            drag
-            className="absolute -left-45 top-16 hidden lg:block">
-                <Image 
-                src={HeroImage1}
-                alt="Hero Image 1"
-                draggable="false"
-                />
-            </motion.div>
-            <motion.div
-            ref={leftPointerScope}
-            initial={{ opacity: 0, y: 100, x: -200}}
-            className="absolute left-46 top-96 hidden lg:block">
-                <Pointer name="Palesa" />
-            </motion.div>
-
-            <motion.div
-            ref={rightDesignScope}
-            initial={{ opacity: 0, x: 100, y: 100}}
-            drag
-            className="absolute -right-64 top-6 hidden lg:block">
-                <Image src={HeroImage2}
-                alt="Hero Image 2"
-                draggable="false"
-                />
-            </motion.div>
-            <motion.div
-            ref={rightPointerScope}
-            initial={{ opacity: 0, x: 275, y: 100}}
-            className="absolute right-80 -top-4 hidden lg:block">
-                <Pointer name="Peter" color="green" />
-            </motion.div>
-
-            <motion.div 
-            className="flex justify-center">
-                <div className="inline-flex py-1 px-3 bg-gradient-to-r from-[#FF6600] to-[#E65C00] rounded-full text-neutral-950 font-semibold">
-                    ✨ Closing date - 30 September 2025
-                </div>
-            </motion.div>
-            <h1 className="text-4xl md:text-5xl lg:text-8xl font-medium text-center mt-6 mx-auto">
-                Celebrating Excellence & Impactful Design 
-            </h1>
-            <p className="text-center text-xl text-white/50 mt-8 max-w-2xl lg:items-center mx-auto">
-                Join us in honoring the best in design and innovation. 
-                Submit your entries for the Jagermeister Designer Awards. 
-                Showcase your creativity and be part of a celebration that recognizes the power of design to inspire and transform.
-            </p>
-            <form className="hidden md:flex border border-white/15 rounded-full p-2 mt-8 max-w-lg lg:items-center mx-auto">
-                <input
-                    type="email"
-                    placeholder="Subscribe to our newsletter"
-                    className="bg-transparent px-4 md:flex-1"
-                />
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className="whitespace-nowrap"
-                    size="sm"
-                >
-                    Signup
-                </Button>
-            </form>
-        </div>
-        </section>
-    );
+interface HeroSectionProps {
+  mainHeading?: { text: string; className?: string };
+  subHeading?: { text: string; className?: string };
+  badgeFeature?: { text: string; className?: string; icon?: ReactNode };
+  primaryButton?: {
+    text?: string;
+    className?: string;
+    onClick?: () => void;
+  };
+  secondaryButton?: {
+    isVisible?: boolean;
+    text?: string;
+    className?: string;
+    onClick?: () => void;
+  };
 }
+
+const HeroSection: React.FC<HeroSectionProps> = ({
+  badgeFeature,
+  mainHeading,
+  subHeading,
+  primaryButton,
+  secondaryButton,
+}) => {
+  const {
+    text: badgeFeatureText = "✨ Closing Date – 30 September 2025",
+    className: badgeFeatureClassName = "",
+    icon: badgeFeatureIcon = <MdStar size={18} />,
+  } = badgeFeature || {};
+
+  const {
+    text: mainHeadingText = "Celebrating Excellence & Impactful Design",
+    className: mainHeadingClassName = "",
+  } = mainHeading || {};
+
+  const {
+    text: subHeadingText = "Join us in honoring the best in fashion design and innovation. Submit your entries for the Jägermeister Designer Awards and showcase your creativity to the world.",
+    className: subHeadingClassName = "",
+  } = subHeading || {};
+
+  const {
+    text: primaryBtnText = "Create an Account",
+    onClick: onPrimaryClick = () => {},
+    className: primaryBtnClassName = "",
+  } = primaryButton || {};
+
+  const {
+    isVisible: isSecondaryButtonVisible = true,
+    text: secondaryBtnText = "Learn More",
+    onClick: onSecondaryClick = () => {},
+    className: secondaryBtnClassName = "",
+  } = secondaryButton || {};
+
+  return (
+    <section className="relative w-full overflow-hidden">
+      {/* Hero Background */}
+      <div
+        className="relative z-10 py-24 lg:py-32 text-center"
+        style={{
+          background: "linear-gradient(180deg, #244034 0%, #3c8968 100%)",
+        }}
+      >
+        {/* Badge */}
+        <Badge
+          className={`py-2 inline-flex items-center justify-center mb-6 ${badgeFeatureClassName}`}
+          variant="outline"
+        >
+          <div className="mr-2">{badgeFeatureIcon}</div>
+          {badgeFeatureText}
+        </Badge>
+
+        {/* Main Heading */}
+        <h1
+          className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight max-w-4xl mx-auto text-white ${mainHeadingClassName}`}
+        >
+          {mainHeadingText}
+        </h1>
+
+        {/* Subheading */}
+        <p
+          className={`text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto ${subHeadingClassName}`}
+        >
+          {subHeadingText}
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <Button
+            onClick={onPrimaryClick}
+            className={`h-12 px-6 rounded-full bg-[#244034] text-white hover:bg-[#3c8968] ${primaryBtnClassName}`}
+          >
+            {primaryBtnText}
+          </Button>
+
+          {isSecondaryButtonVisible && (
+            <Button
+              onClick={onSecondaryClick}
+              className={`h-12 px-6 rounded-full border border-white text-white hover:bg-white hover:text-[#244034] ${secondaryBtnClassName}`}
+            >
+              {secondaryBtnText}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Fade */}
+      <div
+        className="absolute bottom-0 w-full h-24 pointer-events-none"
+        style={{
+          background: "linear-gradient(to bottom, rgba(36,64,52,0), #244034)",
+        }}
+      ></div>
+    </section>
+  );
+};
+
+export default HeroSection;

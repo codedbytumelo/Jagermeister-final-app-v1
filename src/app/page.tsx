@@ -6,8 +6,8 @@ import Guide from "@/sections/Guide";
 import DesignerProfiles from "@/sections/DesignerProfiles";
 import DesignBrief from "@/sections/DesignBrief";
 import Faqs from "@/sections/Faqs";
-import CallToAction from "@/sections/CallToAction";
 import Sponsors from "@/sections/Sponsors";
+import Footer from "@/sections/Footer";
 
 export default function Home() {
   return (
@@ -20,7 +20,7 @@ export default function Home() {
       <DesignerProfiles />
       <DesignBrief />
       <Faqs />
-      <CallToAction />
+      <Footer />
       
     </div>
   );

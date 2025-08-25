@@ -2,142 +2,159 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import {
+  FaInstagram,
+  FaYoutube,
+  FaFacebook,
+  FaTwitter,
+  FaLinkedin,
+} from "react-icons/fa";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import JagermeisterLogo from "@/assets/images/Jägermeister_logo-word.png";
-import Button from "@/components/Button";
 
-const companyLinks = [
-    { href: "#", label: "Contact Us" },
-    { href: "#", label: "Privacy Policy" },
-    { href: "#", label: "Terms & Conditions" },
-    { href: "#", label: "Corporate Website" },
+const socialLinks = [
+  { href: "#", icon: FaInstagram },
+  { href: "#", icon: FaYoutube },
+  { href: "#", icon: FaFacebook },
+  { href: "#", icon: FaTwitter },
+  { href: "#", icon: FaLinkedin },
 ];
 
-const additionalLinks = [
-    { href: "#", label: "FAQ" },
-    { href: "#", label: "Careers" },
-    { href: "#", label: "Press" },
-    { href: "#", label: "Support" },
-];
+const footerNavigation = {
+  Company: [
+    { label: "Contact Us", href: "#" },
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms & Conditions", href: "#" },
+    { label: "Corporate Website", href: "#" },
+  ],
+  Additional: [
+    { label: "FAQ", href: "#" },
+    { label: "Careers", href: "#" },
+    { label: "Press", href: "#" },
+    { label: "Support", href: "#" },
+  ],
+};
 
 export default function Footer() {
-    const [email, setEmail] = useState("");
-    const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setSubmitted(true);
-        setEmail("");
-        // Add your newsletter signup logic here
-    };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitted(true);
+    setEmail("");
+    console.log("Subscribed:", email);
+  };
 
-    return (
-       <footer className="w-full text-gray-300 py-8 overflow-hidden bg-[#1B4D3E]">
-  <div className="container mx-auto px-4">
-    {/* Layout wrapper */}
-    <div
-      className="
-        flex flex-col gap-8
-        sm:grid sm:grid-cols-3 sm:gap-12
-        lg:flex lg:flex-row lg:justify-between lg:items-start
-      "
-    >
-      {/* Logo + Tagline */}
-      <div
-        className="
-          order-2 sm:order-1 lg:order-1
-          flex flex-col items-center sm:items-start text-center sm:text-left
-        "
-      >
-        <Image
-          src={JagermeisterLogo}
-          alt="Jägermeister Logo"
-          width={200}
-          height={50}
-          className="h-12 w-auto mb-4"
-        />
-        <p className="max-w-sm text-sm sm:text-base">
-          Celebrating creative excellence. The Jägermeister Design Awards honor
-          outstanding achievements in design and innovation.
-        </p>
+  return (
+    <footer className="w-full text-gray-300 bg-[#1B4D3E] pt-20">
+      {/* Newsletter */}
+      <div className="mx-auto max-w-[1200px] w-full px-6">
+        <div className="rounded-2xl p-10 mb-16 py-16 bg-[#FF6C2C]">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
+            {/* Text */}
+            <div className="flex-1">
+              <h3 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-2 text-white">
+                Subscribe to our newsletter
+              </h3>
+              <p className="opacity-80 pt-6 text-sm text-white">
+                Be the first to receive updates on the Jägermeister Design
+                Awards, exclusive invites, and creative highlights.
+              </p>
+            </div>
+
+            {/* Form */}
+            <form
+              onSubmit={handleSubmit}
+              className="flex-shrink-0 w-full lg:w-auto"
+            >
+              <div className="flex flex-col xl:flex-row gap-2">
+                <div className="flex-1 lg:w-80">
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email..."
+                    className="w-full px-4 py-7 bg-white/25 rounded-full border-none placeholder-white text-white"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="px-10 py-7 rounded-full bg-white text-[#1B4D3E] hover:bg-gray-200"
+                >
+                  Subscribe
+                </Button>
+              </div>
+              <p className="text-xs opacity-80 mt-6 text-white">
+                By subscribing you agree to our Privacy Policy.
+              </p>
+            </form>
+          </div>
+        </div>
       </div>
 
-      {/* Company Links */}
-      <div
-        className="
-          order-3 sm:order-2 lg:order-2
-          text-center sm:text-left
-        "
-      >
-        <h3 className="font-semibold mb-2 text-orange-400">Company</h3>
-        <ul className="space-y-1">
-          {companyLinks.map((link, index) => (
-            <li key={index}>
+      {/* Footer Links */}
+      <div className="flex flex-col w-full mx-auto max-w-7xl px-6 lg:flex-row items-start justify-between gap-12">
+        {/* Left Section */}
+        <div className="w-full lg:w-1/3">
+          <Image
+            src={JagermeisterLogo}
+            alt="Jägermeister Logo"
+            width={200}
+            height={50}
+            className="h-12 w-auto mb-4"
+          />
+          <p className="text-sm leading-relaxed text-gray-200">
+            Celebrating creative excellence. The Jägermeister Design Awards
+            honor outstanding achievements in design and innovation.
+          </p>
+          <div className="flex items-center space-x-4 mt-6">
+            {socialLinks.map((link, index) => (
               <a
+                key={index}
                 href={link.href}
-                className="hover:text-orange-400 transition-colors"
+                className="hover:opacity-75 transition-opacity duration-200"
+                aria-label={`Social link ${index + 1}`}
               >
-                {link.label}
+                <link.icon className="h-6 w-6 text-gray-200" />
               </a>
-            </li>
-          ))}
-        </ul>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Section */}
+        <div className="w-full lg:w-2/3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-8 sm:gap-12 lg:gap-20 lg:justify-end">
+            {Object.entries(footerNavigation).map(([title, links]) => (
+              <div key={title}>
+                <div className="mb-4 font-semibold text-sm text-orange-400">
+                  {title}
+                </div>
+                <ul className="space-y-3 text-gray-300">
+                  {links.map((link) => (
+                    <li key={link.label}>
+                      <a
+                        href={link.href}
+                        className="hover:underline text-sm transition-all duration-200 hover:text-white"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Additional Links */}
-      <div
-        className="
-          order-4 sm:order-3 lg:order-2
-          text-center sm:text-left
-        "
-      >
-        <h3 className="font-semibold mb-2 text-orange-400">Additional</h3>
-        <ul className="space-y-1">
-          {additionalLinks.map((link, index) => (
-            <li key={index}>
-              <a
-                href={link.href}
-                className="hover:text-orange-400 transition-colors"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+      {/* Copyright */}
+      <div className="mt-12 text-xs text-center text-gray-400 border-t border-white/10 py-6">
+        © 2025 Jägermeister Design Awards. All rights reserved.
       </div>
-
-      {/* Newsletter Form */}
-      <form
-        className="
-          order-1 sm:order-4 lg:order-3
-          flex border border-white/15 rounded-full overflow-hidden
-          w-full sm:col-span-3 sm:max-w-full sm:justify-center lg:max-w-xs lg:mx-0
-        "
-        style={{ maxWidth: '100%' }}
-      >
-        <input
-          type="email"
-          placeholder="Subscribe to our newsletter"
-          className="bg-transparent px-4 py-2 flex-grow focus:outline-none text-sm min-w-0"
-          style={{ minWidth: 0 }}
-        />
-        <Button
-          type="submit"
-          variant="primary"
-          size="sm"
-          className="rounded-none px-5 py-2 h-full flex-shrink-0"
-        >
-          Signup
-        </Button>
-      </form>
-    </div>
-
-    {/* Copyright */}
-    <div className="mt-6 text-xs text-center text-gray-400">
-      © 2025 Jägermeister Design Awards. All rights reserved. | Reserved by Right
-    </div>
-  </div>
-</footer>
-
-
-    );
+    </footer>
+  );
 }

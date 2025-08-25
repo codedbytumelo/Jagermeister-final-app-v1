@@ -13,50 +13,67 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 const logos = [
-    { name: "Quantum", image: quantumLogo },
-    { name: "Acme Corp", image: acmeLogo },
-    { name: "Echo Valley", image: echoValleyLogo },
-    { name: "Pulse", image: pulseLogo },
-    { name: "Outside", image: outsideLogo },
-    { name: "Apex", image: apexLogo },
-    { name: "Celestial", image: celestialLogo },
-    { name: "Twice", image: twiceLogo },
+  { name: "Quantum", image: quantumLogo },
+  { name: "Acme Corp", image: acmeLogo },
+  { name: "Echo Valley", image: echoValleyLogo },
+  { name: "Pulse", image: pulseLogo },
+  { name: "Outside", image: outsideLogo },
+  { name: "Apex", image: apexLogo },
+  { name: "Celestial", image: celestialLogo },
+  { name: "Twice", image: twiceLogo },
 ];
 
 export default function Sponsors() {
-    return (
-        <section className="py-24 overflow-x-clip">
-            <div className="container">
-                <h3 className="text-center text-white/50 text-xl">Meet Our Partners</h3>
-                <div className="overflow-hidden mt-12 [mask-image:linear-gradient(to_right, transparent, black_10%,black_90%,transparent)]">
-                    <motion.div
-                    animate={{
-                        x: "-50%",
-                    }}
-                    transition={{
-                        duration: 5,
-                        ease: "linear",
-                        repeat: Infinity,
-                    }}
-                    className="flex gap-24 pr-24">
-                        {Array.from({ length: 2 }).map((_, index) => (
-                            <Fragment key={index}>
-                            {logos.map(logo => (
-                            <Image 
-                            src={logo.image}
-                            key={logo.name}
-                            alt={logo.name}
-                            height={48}
-                            width={120}
-                            style={{ objectFit: "contain" }}
-                            />
-                        ))}
-                            </Fragment>
-                        ))}
-                        
-                    </motion.div>
-                </div>
-            </div>
-        </section>
-    )
+  return (
+    <section className="py-24 relative overflow-hidden">
+      <div className="container mx-auto">
+        <h3 className="text-center text-white/50 text-xl mb-12">
+          Meet Our Partners
+        </h3>
+
+        {/* Masked Scrolling Container */}
+        <div
+          className="overflow-hidden relative"
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+          }}
+        >
+          <motion.div
+            className="flex gap-24"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{
+              repeat: Infinity,
+              repeatType: "loop",
+              duration: 20,
+              ease: "linear",
+            }}
+          >
+            {/* Duplicate the logos twice for seamless loop */}
+            {Array.from({ length: 2 }).map((_, idx) => (
+              <Fragment key={idx}>
+                {logos.map((logo) => (
+                  <div
+                    key={logo.name + idx}
+                    className="flex-shrink-0"
+                    style={{ width: 120 }}
+                  >
+                    <Image
+                      src={logo.image}
+                      alt={logo.name}
+                      width={120}
+                      height={48}
+                      style={{ objectFit: "contain" }}
+                    />
+                  </div>
+                ))}
+              </Fragment>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
 }

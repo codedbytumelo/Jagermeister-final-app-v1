@@ -1,90 +1,83 @@
-import Tag from "@/components/Tag";
-import GuideCard from "@/components/GuideCard";
-import signupform from "@/assets/images/Sign-Up-form.png";
-import FileUpload from "@/assets/images/file-upload.png";
-import UploadForm from "@/assets/images/file-upload-form.png";
-import Uploadformprogress from "@/assets/images/file-upload-progress.png";
-import FileUpLoadSuccessful from "@/assets/images/file-upload-successful.png";
-import Image from "next/image";
-import Avatar from "@/components/Avatar";
+"use client";
 
-const features = [
-    "Asset Library",
-    "Code Preview",
-    "Flow Mode",
-    "Smart Sync",
-    "Auto Layout",
-    "Fast Search",
-    "Smart Guides",
+import React, { useState } from "react";
+import StepCard from "@/components/StepCard";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+
+// Import local images
+import Step1Image from "@/assets/images/file-upload.png";
+import Step2Image from "@/assets/images/file-upload-progress.png";
+import Step3Image from "@/assets/images/file-upload-successful.png";
+
+const steps = [
+  {
+    number: 1,
+    title: "Register Your Details",
+    description: "Signup for the Jagermeister Design Awards with accurate details.",
+    img: Step1Image,
+  },
+  {
+    number: 2,
+    title: "Submit Your Designs",
+    description: "Upload your design entries following the competition guidelines.",
+    img: Step2Image,
+  },
+  {
+    number: 3,
+    title: "Click Submit",
+    description: "Finalize your entry by clicking submit after reviewing your designs.",
+    img: Step3Image,
+  },
 ];
 
-export default function Guide() {
-    return(
-        <section className="py-24">
-            <div className="container">
-                <div className="flex justify-center">
-                <Tag>How To Enter</Tag>
-                </div>
-                <h2 className="text-4xl md:text-6xl font-medium mt-6 text-center max-w-xl mx-auto">Follow These Three Easy{" "}
-                    <span className="text-orange-400">Steps</span>
-                </h2>
-                <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <GuideCard
-                        title="Step 1: Register Your Details"
-                        description="Signup for the Jagermeister Design Awards by providing your personal and professional details. 
-                        This will help us keep you updated with the latest information and ensure your entry is valid."
-                        className=""
-                    >
-                        <div className="aspect-video flex items-center justify-center">
-                            <Image src={FileUpload}
-                                alt="Design Example"
-                                className="object-cover w-auto" />
-                        </div>
-                        <div className="text-neutral-400 text-sm mt-4">
-                            <span className="text-white">Tip:</span>
-                            Ensure that your details are accurate to avoid any issues during the submission process.
-                        </div>
-                    </GuideCard>
+export default function HowItWorks() {
+  const [activeStep, setActiveStep] = useState(0);
 
-                    <GuideCard
-                        title="Step 2: Submit Your Designs"
-                        description="Upload your design entries through our online portal. 
-                        Ensure that your submissions meet the specified guidelines and criteria for each category."
-                        className=""
-                    >
-                        <div className="aspect-video flex items-center justify-center gap-6">
-                            <div className="flex flex-col items-center">
-                                <Image
-                                    src={Uploadformprogress}
-                                    alt="File Upload Form"
-                                    className="object-cover w-auto mb-2"
-                                />
-                            </div>
-                        </div>
-                        <div className="text-neutral-400 text-sm mt-4">
-                            <span className="text-white">Tip:</span>
-                            Double-check your designs for quality and adherence to the guidelines before submitting.
-                        </div>
-                    </GuideCard>
+  return (
+    <section className="py-24 container mx-auto px-6 flex flex-col lg:flex-row gap-12">
+      {/* Left: Steps */}
+      <div className="flex-1 space-y-6">
+        <h2 className="text-4xl font-bold text-center lg:text-left mb-6">
+          How To Enter
+        </h2>
+        {steps.map((step, index) => (
+          <StepCard
+            key={index}
+            number={step.number}
+            title={step.title}
+            description={step.description}
+            isActive={activeStep === index}
+            onClick={() => setActiveStep(index)}
+          />
+        ))}
+        <Button className="mt-8 bg-[#244034] hover:bg-[#3f634d]">
+          Create Account
+        </Button>
+      </div>
 
-                    <GuideCard
-                        title="Step 3: Click Submit"
-                        description="After reviewing your entries, 
-                        click the submit button to finalize your participation in the awards."
-                        className=""
-                    >
-                        <div className="aspect-video flex items-center justify-center">
-                            <Image src={FileUpLoadSuccessful}
-                                alt="Design Example 1"
-                                className="object-cover w-auto" />
-                        </div>
-                        <div className="text-neutral-400 text-sm mt-4">
-                            <span className="text-white">Tip:</span>
-                            Ensure that you have completed all steps before clicking submit to avoid any last-minute issues.
-                        </div>
-                    </GuideCard>
-                </div>
-            </div>
-        </section>
-    )
+      {/* Right: Step Image */}
+      <div className="flex-1 relative w-full lg:w-auto h-96 lg:h-[480px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeStep}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.5 }}
+            className="relative w-full h-full rounded-lg overflow-hidden"
+          >
+            <Image
+              src={steps[activeStep].img}
+              alt={steps[activeStep].title}
+              fill
+              className="object-cover object-center rounded-lg"
+              priority
+            />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
 }

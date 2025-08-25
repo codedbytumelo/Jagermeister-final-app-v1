@@ -1,49 +1,59 @@
-import { type ProfileType } from "@/sections/DesignerProfiles";
-import Image from "next/image";
-import Avatar1 from "@/assets/images/avatar-ashwin-santiago.jpg";
-import Avatar2 from "@/assets/images/avatar-florence-shaw.jpg";
-import Avatar3 from "@/assets/images/avatar-lula-meyers.jpg";
-import Avatar4 from "@/assets/images/avatar-owen-garcia.jpg";
-import { twMerge } from "tailwind-merge";
+"use client";
 
-export default function ProfileColomn (props: {
-    profiles: ProfileType
-    className?: string;
-}) {
-    const { profiles, className } = props;
-    return (
-        <div className={twMerge("flex flex-col gap-4 pb-4", className)}>
-                       {profiles.map(profiles => {
-                            let avatarSrc;
-                            switch (profiles.icon) {
-                                case "ashwinIcon":
-                                    avatarSrc = Avatar1;
-                                    break;
-                                case "florenceIcon":
-                                    avatarSrc = Avatar2;
-                                    break;
-                                case "lulaIcon":
-                                    avatarSrc = Avatar3;
-                                    break;
-                                case "owenIcon":
-                                    avatarSrc = Avatar4;
-                                    break;
-                                default:
-                                    avatarSrc = Avatar1;
-                            }
-                            return (
-                                <div key={profiles.id} className="bg-[#CC5500] border border-white/10 rounded-3xl p-6 ">
-                                    <div className="flex items-center justify-center mb-4">
-                                        <Image 
-                                        src={avatarSrc} 
-                                        alt={`${profiles.name} icon`} 
-                                        className="size-24"/>
-                                    </div>
-                                    <h3 className="text-3xl text-center mt-6">{profiles.name}</h3>
-                                    <p className="text-center text-white/50 mt-2">{profiles.description}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
-    )
+import React from "react";
+import { motion } from "framer-motion";
+import Image, { StaticImageData } from "next/image";
+
+export interface Profile {
+  id: number;
+  name: string;
+  avatar: StaticImageData; // make sure your imports from /assets/images are of type StaticImageData
+  description: string;
+}
+
+interface ProfileColomnProps {
+  profiles: Profile[]; // <-- must be an array
+  direction?: "up" | "down";
+  speed?: number; // higher = slower
+}
+
+export default function ProfileColomn({
+  profiles = [],
+  direction = "up",
+  speed = 20,
+}: ProfileColomnProps) {
+  if (!profiles || !Array.isArray(profiles)) return null;
+
+  // Duplicate profiles for seamless looping
+  const repeatedProfiles = [...profiles, ...profiles];
+
+  const yDistance = direction === "up" ? "-50%" : "50%";
+
+  return (
+    <motion.div
+      animate={{ y: [0, yDistance] }}
+      transition={{
+        repeat: Infinity,
+        duration: speed,
+        ease: "linear",
+      }}
+      className="flex flex-col gap-6"
+    >
+      {repeatedProfiles.map((profile, idx) => (
+        <div key={idx} className="flex flex-col items-center text-center">
+          <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-orange-500">
+            <Image
+              src={profile.avatar}
+              alt={profile.name}
+              width={96}
+              height={96}
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <p className="mt-2 text-white font-semibold">{profile.name}</p>
+          <p className="text-white/50 text-sm">{profile.description}</p>
+        </div>
+      ))}
+    </motion.div>
+  );
 }

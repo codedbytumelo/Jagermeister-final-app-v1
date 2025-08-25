@@ -1,51 +1,55 @@
-import * as React from "react";
-import { type VariantProps } from "tailwind-variants";
-import { tv } from "tailwind-variants";
+// components/ui/button.tsx
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
 
+import { cn } from "@/lib/utils"
 
-
-// Define button variants
-const buttonVariants = tv({
-  base: "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none",
-  variants: {
-    variant: {
-      default: "bg-orange-500 text-white hover:bg-orange-600",
-      outline: "border border-white text-white hover:bg-white/10",
-      ghost: "bg-transparent hover:bg-white/10 text-white",
+// Define button variants with cva
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all focus:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default: "bg-neutral-900 text-white hover:bg-neutral-800",
+        primary: "bg-[#d2f34c] text-black hover:bg-[#c1e63e]",
+        secondary: "bg-[#244034] text-white hover:bg-[#1b3027]",
+        ghost: "bg-transparent text-white hover:bg-white/10",
+        cta: "bg-[#FF6F00] text-white hover:bg-[#e65f00]", // ✅ Jaeger orange
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
     },
-    size: {
-      default: "h-10 py-2 px-4",
-      sm: "h-8 px-3",
-      lg: "h-12 px-6",
+    defaultVariants: {
+      variant: "default",
+      size: "default",
     },
-  },
-  defaultVariants: {
-    variant: "default",
-    size: "default",
-  },
-});
+  }
+)
 
-
-// Fix: ButtonProps is now used
-interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "className"> {
-  variant?: "default" | "outline" | "ghost";
-  size?: "default" | "sm" | "lg";
-  className?: string;
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
 }
 
-// Use ButtonProps as the type for the component props
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "default", size = "default", className, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
     return (
-      <button
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        className={buttonVariants({ variant, size, className })}
         {...props}
       />
-    );
+    )
   }
-);
+)
 
-Button.displayName = "Button";
+Button.displayName = "Button"
 
-export { Button, buttonVariants };
+export { Button, buttonVariants }
