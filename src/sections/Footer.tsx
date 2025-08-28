@@ -153,7 +153,7 @@ export default function Footer() {
 
       {/* Copyright */}
       <div className="mt-12 text-xs text-center text-gray-400 border-t border-white/10 py-6">
-        © 2025 Jägermeister Design Awards. All rights reserved.
+        © 2025 Powered by Jägermeister. All rights reserved.
       </div>
     </footer>
   );

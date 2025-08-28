@@ -1,124 +1,81 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import React, { ReactNode } from "react";
-import { MdStar } from "react-icons/md";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
 
-interface HeroSectionProps {
-  mainHeading?: { text: string; className?: string };
-  subHeading?: { text: string; className?: string };
-  badgeFeature?: { text: string; className?: string; icon?: ReactNode };
-  primaryButton?: {
-    text?: string;
-    className?: string;
-    onClick?: () => void;
-  };
-  secondaryButton?: {
-    isVisible?: boolean;
-    text?: string;
-    className?: string;
-    onClick?: () => void;
-  };
-}
+import "swiper/css";
+import "swiper/css/pagination";
 
-const HeroSection: React.FC<HeroSectionProps> = ({
-  badgeFeature,
-  mainHeading,
-  subHeading,
-  primaryButton,
-  secondaryButton,
-}) => {
-  const {
-    text: badgeFeatureText = "✨ Closing Date – 30 September 2025",
-    className: badgeFeatureClassName = "",
-    icon: badgeFeatureIcon = <MdStar size={18} />,
-  } = badgeFeature || {};
+// Import local images
+import runwayImg from "@/assets/images/runway-1.jpg";
+import sketchImg from "@/assets/images/design-sketch-1.jpg";
+import showcaseImg from "@/assets/images/design_showcase_1.jpg";
 
-  const {
-    text: mainHeadingText = "Celebrating Excellence & Impactful Design",
-    className: mainHeadingClassName = "",
-  } = mainHeading || {};
-
-  const {
-    text: subHeadingText = "Join us in honoring the best in fashion design and innovation. Submit your entries for the Jägermeister Designer Awards and showcase your creativity to the world.",
-    className: subHeadingClassName = "",
-  } = subHeading || {};
-
-  const {
-    text: primaryBtnText = "Create an Account",
-    onClick: onPrimaryClick = () => {},
-    className: primaryBtnClassName = "",
-  } = primaryButton || {};
-
-  const {
-    isVisible: isSecondaryButtonVisible = true,
-    text: secondaryBtnText = "Learn More",
-    onClick: onSecondaryClick = () => {},
-    className: secondaryBtnClassName = "",
-  } = secondaryButton || {};
+export default function Hero() {
+  const slides = [
+    { image: runwayImg, alt: "Runway", title: "Fashion Meets Innovation", subtitle: "Join the ultimate fashion design challenge — where creativity, culture, and technology collide." },
+    { image: sketchImg, alt: "Design Sketch", title: "Design Like a Pro", subtitle: "Bring your creative visions to life with cutting-edge fashion tools." },
+    { image: showcaseImg, alt: "Design Showcase", title: "Showcase Your Talent", subtitle: "Present your designs to the world and inspire the next trendsetters." },
+  ];
 
   return (
-    <section className="relative w-full overflow-hidden">
-      {/* Hero Background */}
-      <div
-        className="relative z-10 py-24 lg:py-32 text-center"
-        style={{
-          background: "linear-gradient(180deg, #244034 0%, #3c8968 100%)",
-        }}
+    <section className="flex justify-center px-4 py-10">
+      <motion.div
+        className="relative w-full max-w-6xl rounded-[3rem] overflow-hidden shadow-2xl"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: "easeOut" }}
       >
-        {/* Badge */}
-        <Badge
-          className={`py-2 inline-flex items-center justify-center mb-6 ${badgeFeatureClassName}`}
-          variant="outline"
+        <Swiper
+          modules={[Autoplay, Pagination]}
+          spaceBetween={0}
+          slidesPerView={1}
+          loop
+          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          pagination={{ clickable: true }}
+          className="w-full h-[500px]"
         >
-          <div className="mr-2">{badgeFeatureIcon}</div>
-          {badgeFeatureText}
-        </Badge>
+          {slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <motion.div
+                className="relative h-full w-full"
+                initial={{ scale: 1.05, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 2, ease: "easeOut" }}
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.alt}
+                  className="object-cover rounded-[3rem]"
+                  fill
+                />
+                {/* Dark overlay to improve text readability */}
+                <div className="absolute inset-0 bg-black/30 rounded-[3rem]" />
 
-        {/* Main Heading */}
-        <h1
-          className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight max-w-4xl mx-auto text-white ${mainHeadingClassName}`}
-        >
-          {mainHeadingText}
-        </h1>
-
-        {/* Subheading */}
-        <p
-          className={`text-lg md:text-xl text-white/80 mb-10 max-w-3xl mx-auto ${subHeadingClassName}`}
-        >
-          {subHeadingText}
-        </p>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button
-            onClick={onPrimaryClick}
-            className={`h-12 px-6 rounded-full bg-[#244034] text-white hover:bg-[#3c8968] ${primaryBtnClassName}`}
-          >
-            {primaryBtnText}
-          </Button>
-
-          {isSecondaryButtonVisible && (
-            <Button
-              onClick={onSecondaryClick}
-              className={`h-12 px-6 rounded-full border border-white text-white hover:bg-white hover:text-[#244034] ${secondaryBtnClassName}`}
-            >
-              {secondaryBtnText}
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Bottom Fade */}
-      <div
-        className="absolute bottom-0 w-full h-24 pointer-events-none"
-        style={{
-          background: "linear-gradient(to bottom, rgba(36,64,52,0), #244034)",
-        }}
-      ></div>
+                {/* Text and CTA Buttons overlay */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                  <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
+                    {slide.title}
+                  </h1>
+                  <p className="mt-4 text-lg md:text-xl text-white/80 max-w-2xl">
+                    {slide.subtitle}
+                  </p>
+                  <div className="mt-6 flex gap-4">
+                    <button className="px-6 py-3 rounded-2xl font-semibold bg-white text-[#244034] hover:bg-gray-200 transition">
+                      Get Started
+                    </button>
+                    <button className="px-6 py-3 rounded-2xl font-semibold border border-white/30 hover:bg-white/10 transition">
+                      Learn More
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </motion.div>
     </section>
   );
-};
-
-export default HeroSection;
+}

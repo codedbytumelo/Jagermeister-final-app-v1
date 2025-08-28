@@ -10,6 +10,7 @@ import Image from "next/image";
 import Step1Image from "@/assets/images/file-upload.png";
 import Step2Image from "@/assets/images/file-upload-progress.png";
 import Step3Image from "@/assets/images/file-upload-successful.png";
+import Tag from "@/components/Tag";
 
 const steps = [
   {
@@ -38,10 +39,8 @@ export default function HowItWorks() {
   return (
     <section className="py-24 container mx-auto px-6 flex flex-col lg:flex-row gap-12">
       {/* Left: Steps */}
-      <div className="flex-1 space-y-6">
-        <h2 className="text-4xl font-bold text-center lg:text-left mb-6">
-          How To Enter
-        </h2>
+      <div className="flex-1 items-center justify-center space-y-6">
+        <Tag>How To Enter</Tag>
         {steps.map((step, index) => (
           <StepCard
             key={index}

@@ -1,171 +1,212 @@
 "use client";
 
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-import logoImage from "@/assets/images/Jägermeister_logo-word.png";
-import { twMerge } from "tailwind-merge";
-import { Info, Users, BookOpen, FileText, ClipboardList, Phone, HelpCircle, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import logoImage from "@/assets/images/Jager-Logo.png";
 
-// Type definitions
-interface SubLink {
+type NavItem = {
   label: string;
-  href?: string;
-  icon: React.ReactNode;
-}
+  href: string;
+  subMenu?: {
+    label: string;
+    href: string;
+    icon?: React.ReactNode;
+  }[];
+  openInNewTab?: boolean;
+};
 
-interface NavLink {
-  label: string;
-  href?: string; // only for top-level links without subMenu
-  subMenu?: SubLink[];
-}
-
-// Nav links
-const navLinks: NavLink[] = [
+// ✅ Shop now goes to Age Gate (/shop/dob) and can open in a new tab
+const navItems: NavItem[] = [
+  { label: "Home", href: "/" },
   {
     label: "About",
+    href: "/about",
     subMenu: [
-      { label: "Our Story", href: "#our-story", icon: <BookOpen size={16} /> },
-      { label: "Meet the Judges", href: "#meet-judges", icon: <Users size={16} /> },
+      { label: "Our Story", href: "/about/our-story" },
+      { label: "The Judges", href: "/about/judges" },
     ],
   },
   {
     label: "Competition",
+    href: "/competition",
     subMenu: [
-      { label: "Rules", href: "#rules", icon: <CheckCircle size={16} /> },
-      { label: "Design Brief", href: "#design-brief", icon: <FileText size={16} /> },
-      { label: "Categories", href: "#categories", icon: <ClipboardList size={16} /> },
+      { label: "Design Brief", href: "/competition/design-brief" },
+      { label: "How To Enter", href: "/competition/how-to-enter" },
     ],
   },
-  {
-    label: "Support",
-    subMenu: [
-      { label: "Contact Us", href: "#contact", icon: <Phone size={16} /> },
-      { label: "FAQs", href: "#faqs", icon: <HelpCircle size={16} /> },
-      { label: "Help Center", href: "#help-center", icon: <Info size={16} /> },
-    ],
-  },
+  { label: "Shop", href: "/shop/dob", openInNewTab: true }, // 👈 Age Gate page
+  { label: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <>
-      <section className="py-4 mx-auto fixed w-full top-0 z-50">
-        <div className="container max-w-5xl mx-auto">
-          <div className="border border-white/15 rounded-[27px] md:rounded-full backdrop-blur bg-[rgba(27,77,62,0.7)]">
-            <div className="grid grid-cols-2 lg:grid-cols-3 p-2 px-4 md:pr-2 items-center">
-              
-              {/* Logo */}
-              <div>
-                <Link href="/">
-                  <Image src={logoImage} alt="Jägermeister logo" width={120} height={40} className="h-9 md:h-auto w-auto" />
-                </Link>
-              </div>
+    <AnimatePresence>
+      {isScrolled && (
+        <motion.nav
+          initial={{ y: -80 }}
+          animate={{ y: 0 }}
+          exit={{ y: -80 }}
+          transition={{ duration: 0.3 }}
+          className="fixed top-0 left-0 w-full z-50 bg-[#244034]/95 shadow-lg"
+        >
+          <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src={logoImage}
+                alt="Logo"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+              <span className="font-bold text-lg text-white">
+                Hanger & Manikin
+              </span>
+            </Link>
 
-              {/* Desktop Nav */}
-              <div className="lg:flex justify-center items-center hidden max-w-[700px] mx-auto gap-4 font-medium">
-                {navLinks.map((link) => (
-                  <div key={link.label} className="relative"
-                       onMouseEnter={() => setOpenDropdown(link.label)}
-                       onMouseLeave={() => setOpenDropdown(null)}>
-                    {link.subMenu ? (
-                      <>
-                        <button className="hover:text-[#d2f34c] transition-colors text-sm">
-                          {link.label}
-                        </button>
-                        <AnimatePresence>
-                          {openDropdown === link.label && (
-                            <motion.div
-                              initial={{ opacity: 0, y: -10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -10 }}
-                              transition={{ duration: 0.2 }}
-                              className="absolute left-0 mt-2 w-44 bg-[#3c8968] text-white rounded-md shadow-lg z-50"
-                            >
-                              {link.subMenu.map((sub) => (
-                                <Link key={sub.label} href={sub.href || "#"} className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-[#d2f34c] hover:text-[#244034] transition-colors">
-                                  {sub.icon}{sub.label}
-                                </Link>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </>
-                    ) : (
-                      <Link href={link.href || "#"} className="hover:text-[#d2f34c] transition-colors text-sm">
-                        {link.label}
-                      </Link>
-                    )}
-                  </div>
-                ))}
-              </div>
+            {/* Desktop Nav Links */}
+            <ul className="hidden md:flex items-center space-x-8 text-white">
+              {navItems.map((item) => (
+                <li key={item.label} className="relative group">
+                  {item.openInNewTab ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-[#d2f34c]"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link href={item.href} className="hover:text-[#d2f34c]">
+                      {item.label}
+                    </Link>
+                  )}
+                  {item.subMenu && (
+                    <ul className="absolute left-0 mt-2 hidden group-hover:block bg-[#244034] rounded-lg shadow-lg p-2 min-w-[160px]">
+                      {item.subMenu.map((sub) => (
+                        <li key={sub.label}>
+                          <Link
+                            href={sub.href}
+                            className="block px-4 py-2 text-sm text-white hover:text-[#d2f34c]"
+                          >
+                            {sub.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
 
-              {/* Right Side - Buttons & Mobile Menu */}
-              <div className="flex justify-end gap-4">
-                <button aria-label="Toggle Menu" className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="3" y1="6" x2="21" y2="6" className={twMerge("origin-left transition", isOpen && "rotate-45 -translate-y-1")} />
-                    <line x1="3" y1="12" x2="21" y2="12" className={twMerge("transition", isOpen && "opacity-0")} />
-                    <line x1="3" y1="18" x2="21" y2="18" className={twMerge("origin-left transition", isOpen && "-rotate-45 translate-y-1")} />
-                  </svg>
-                </button>
-
-                {/* Desktop Buttons */}
-                <Link href="/login"><Button variant="secondary" className="hidden md:inline-flex items-center">Log In</Button></Link>
-                <Link href="/signup"><Button variant="primary" className="hidden md:inline-flex items-center">Create Account</Button></Link>
-              </div>
+            {/* Desktop Auth Buttons */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Link
+                href="/login"
+                className="px-4 py-2 rounded-xl border border-[#d2f34c] text-[#d2f34c] hover:bg-[#d2f34c] hover:text-[#244034] transition"
+              >
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="px-4 py-2 rounded-xl bg-[#d2f34c] text-[#244034] hover:bg-[#c1e23b] transition"
+              >
+                Create Account
+              </Link>
             </div>
 
-            {/* Mobile Menu */}
-            <AnimatePresence>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex flex-col items-start gap-1 py-4 max-h-[80vh] overflow-y-auto px-2">
-                    {navLinks.map((link) =>
-                      link.subMenu ? (
-                        <div key={link.label} className="w-full">
-                          <p className="font-medium px-3 py-2">{link.label}</p>
-                          <div className="flex flex-col gap-1 w-full">
-                            {link.subMenu.map((sub) => (
-                              <Link key={sub.label} href={sub.href || "#"} className="flex items-center gap-2 px-4 py-2 w-full text-sm hover:bg-[#d2f34c] hover:text-[#244034] transition-colors rounded">
-                                {sub.icon}{sub.label}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <Link key={link.label} href={link.href || "#"} className="px-4 py-2 text-sm hover:text-[#d2f34c] transition-colors">
-                          {link.label}
-                        </Link>
-                      )
-                    )}
-
-                    {/* Mobile Buttons at bottom */}
-                    <div className="mt-4 w-full flex flex-col gap-2 px-2">
-                      <Link href="/login"><Button variant="secondary" className="w-full">Log In</Button></Link>
-                      <Link href="/signup"><Button variant="primary" className="w-full">Create Account</Button></Link>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Mobile Hamburger */}
+            <button
+              className="md:hidden flex items-center text-white"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
           </div>
-        </div>
-      </section>
 
-      <div className="pb-[80px] md:pb-[90px] lg:pb-[100px]"></div>
-    </>
+          {/* Mobile Menu */}
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="md:hidden bg-[#244034] shadow-lg"
+            >
+              <ul className="flex flex-col space-y-2 px-6 py-4 text-white">
+                {navItems.map((item) => (
+                  <li key={item.label} className="relative">
+                    {item.openInNewTab ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block py-2 hover:text-[#d2f34c]"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className="block py-2 hover:text-[#d2f34c]"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
+                    {item.subMenu && (
+                      <ul className="ml-4 mt-1 space-y-1">
+                        {item.subMenu.map((sub) => (
+                          <li key={sub.label}>
+                            <Link
+                              href={sub.href}
+                              className="block py-1 text-sm hover:text-[#d2f34c]"
+                              onClick={() => setIsOpen(false)}
+                            >
+                              {sub.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-col space-y-2 px-6 pb-4">
+                <Link
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-[#d2f34c] text-[#d2f34c] text-center hover:bg-[#d2f34c] hover:text-[#244034] transition"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-[#d2f34c] text-[#244034] text-center hover:bg-[#c1e23b] transition"
+                >
+                  Create Account
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </motion.nav>
+      )}
+    </AnimatePresence>
   );
 }
